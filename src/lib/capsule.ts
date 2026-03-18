@@ -26,3 +26,7 @@ export const createCapsule = createServerFn({ method: 'POST' })
 
     return { success: true, capsuleId: newCapsule.id }
   })
+
+export const findAllCapsule = createServerFn({ method: 'GET' }).handler(
+  async () => {},
+)
