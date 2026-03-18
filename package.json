@@ -6,7 +6,7 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "dev": "vite dev --port 3000",
+    "dev": "vite dev --port 6800",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
@@ -48,6 +48,7 @@
     "highlight.js": "^11.11.1",
     "lucide-react": "^0.577.0",
     "prisma": "^7.4.2",
+    "radix-ui": "^1.4.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "streamdown": "^2.3.0",

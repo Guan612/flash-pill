@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -7,8 +8,155 @@ datasource db {
   provider = "postgresql"
 }
 
-model Todo {
-  id        Int      @id @default(autoincrement())
-  title     String
+// --- Better Auth 相关模型 (保持兼容性) ---
+
+model User {
+  id            String   @id @default(cuid())
+  name          String?
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // 关联闪念胶囊
+  capsules Capsule[]
+  sessions Session[]
+  accounts Account[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  ipAddress String?
+  userAgent String?
+
+  @@map("session")
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+  @@index([userId])
+}
+
+model Verification {
+  id         String    @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+
+  @@map("verification")
+  @@index([identifier])
+}
+
+// --- 闪念胶囊 核心模型 ---
+
+model Capsule {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 内容部分
+  title          String? // AI 自动生成的标题或总结
+  rawContent     String // 原始输入的文本
+  refinedContent String? // AI 优化过后的内容
+
+  // 胶囊状态
+  status CapsuleStatus @default(SEALED)
+  type   CapsuleType   @default(IDEA)
+
+  // 附件 (语音、图片链接等)
+  attachments Attachment[]
+
+  // 时间与提醒逻辑
+  openAt    DateTime? // 设定的开启时间 (发酵完成时间)
+  isOpened  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // 情感与上下文 (由 AI 自动填充或记录时捕捉)
+  mood     String? // 当时的心情
+  location String? // 记录地点
+
+  // AI 语义标签
+  tags Tag[]
+
+  // 语义关联：指向相关的胶囊 (由 AI 计算)
+  relatedTo   CapsuleLink[] @relation("source")
+  relatedFrom CapsuleLink[] @relation("target")
+
+  @@map("capsule")
+}
+
+model Attachment {
+  id        String  @id @default(cuid())
+  capsuleId String
+  capsule   Capsule @relation(fields: [capsuleId], references: [id], onDelete: Cascade)
+  type      String // "IMAGE", "AUDIO", "FILE"
+  url       String // OSS 地址或 Tauri 本地路径
+  fileName  String?
+  duration  Int? // 如果是音频，记录时长
+}
+
+model Tag {
+  id       String    @id @default(cuid())
+  name     String
+  userId   String
+  capsules Capsule[]
+
+  @@unique([name, userId])
+}
+
+// 用于存储 AI 自动发现的胶囊之间的关系
+
+model CapsuleLink {
+  id       String  @id @default(cuid())
+  sourceId String
+  targetId String
+  source   Capsule @relation("source", fields: [sourceId], references: [id])
+  target   Capsule @relation("target", fields: [targetId], references: [id])
+  strength Float   @default(1.0) // 关联强度
+  reason   String? // 为什么关联？AI 的解释
+
+  @@unique([sourceId, targetId])
+}
+
+enum CapsuleStatus {
+  SEALED // 封存中
+  FERMENTING // 发酵中 (AI 正在处理或定期提醒中)
+  OPENED // 已开启
+  ARCHIVED // 已归档
+}
+
+enum CapsuleType {
+  IDEA // 点子
+  TODO // 待办
+  MEMO // 随手记
+  INSIGHT // 深度思考
 }
