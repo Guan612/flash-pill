@@ -74,7 +74,7 @@ export class QuickCaptureInput extends React.Component<
     return (
       <div
         className={cn(
-          'rounded-2xl border border-border/60 bg-background/95 p-4 shadow-sm',
+          'paper-note-card rounded-[1.6rem] p-4 shadow-sm',
           isMobile && 'border-0 bg-transparent p-0 shadow-none',
         )}
       >
@@ -95,7 +95,7 @@ export class QuickCaptureInput extends React.Component<
         />
 
         <div className="mt-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <div className="flex items-center gap-3 text-sm text-[#5c7e98]">
             <span className="inline-flex items-center gap-1">
               <Mic className="size-4" aria-hidden="true" />
               <span>语音</span>
@@ -159,7 +159,7 @@ export class QuickCaptureInput extends React.Component<
         <Button
           type="button"
           size="icon-lg"
-          className="fixed bottom-6 right-6 rounded-full shadow-lg md:hidden"
+          className="fixed bottom-6 right-6 rounded-full border border-[#F5A9B8]/55 bg-[linear-gradient(135deg,#5BCEFA,#F5A9B8)] text-white shadow-[0_18px_36px_rgba(91,206,250,0.24)] md:hidden"
           onClick={this.openMobileComposer}
           aria-label="打开移动端记录面板"
         >
@@ -172,10 +172,10 @@ export class QuickCaptureInput extends React.Component<
               role="dialog"
               aria-modal="true"
               aria-label="快速记录面板"
-              className="w-full rounded-t-3xl bg-background p-4 shadow-2xl"
+              className="w-full rounded-t-[2rem] bg-white/98 p-4 shadow-2xl"
             >
               <div className="mb-4 flex items-center justify-between">
-                <p className="text-sm font-medium text-muted-foreground">
+                <p className="text-sm font-medium text-[#5c7e98]">
                   快速记录面板
                 </p>
                 <Button

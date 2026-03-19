@@ -38,14 +38,12 @@ export class HomeFilters extends React.Component<
     return (
       <div
         className={cn(
-          'rounded-2xl border border-border/60 bg-background/80 p-3 shadow-sm',
+          'paper-note-card rounded-[1.6rem] p-3 shadow-sm',
           className,
         )}
       >
         <div className="hidden items-center gap-2 sm:flex">
-          <span className="text-sm font-medium text-muted-foreground">
-            浏览视角
-          </span>
+          <span className="text-sm font-medium text-[#5c7e98]">贴纸筛选</span>
           {FILTER_OPTIONS.map((option) => {
             const active = selected.includes(option)
 
@@ -54,11 +52,12 @@ export class HomeFilters extends React.Component<
                 key={option}
                 type="button"
                 onClick={() => this.toggleOption(option)}
+                aria-pressed={active}
                 className={cn(
-                  'inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors',
+                  'paper-chip inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm transition-colors cursor-pointer',
                   active
-                    ? 'border-indigo-400/40 bg-indigo-500/10 text-foreground'
-                    : 'border-border/60 bg-background/70 text-muted-foreground hover:text-foreground',
+                    ? 'border-[#5BCEFA]/45 bg-[linear-gradient(135deg,rgba(91,206,250,0.2),rgba(245,169,184,0.18))] text-[#24455f] shadow-[0_8px_18px_rgba(91,206,250,0.12)]'
+                    : 'text-[#5c7e98] hover:border-[#F5A9B8]/55 hover:text-[#24455f]',
                 )}
               >
                 {active ? (
@@ -71,13 +70,12 @@ export class HomeFilters extends React.Component<
         </div>
 
         <div className="flex items-center justify-between sm:hidden">
-          <span className="text-sm font-medium text-muted-foreground">
-            浏览视角
-          </span>
+          <span className="text-sm font-medium text-[#5c7e98]">贴纸筛选</span>
           <Button
             type="button"
             variant="outline"
             onClick={() => this.setState({ open: true })}
+            className="rounded-full border-[#5BCEFA]/35 bg-white/90 text-[#24455f] shadow-[0_10px_22px_rgba(91,206,250,0.1)]"
           >
             <SlidersHorizontal className="size-4" aria-hidden="true" />
             筛选
@@ -86,11 +84,16 @@ export class HomeFilters extends React.Component<
 
         {open ? (
           <div className="fixed inset-0 z-40 flex items-end bg-black/30 sm:hidden">
-            <div className="w-full rounded-t-3xl bg-background p-4 shadow-2xl">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="筛选视图"
+              className="w-full rounded-t-[2rem] bg-white/98 p-4 shadow-2xl"
+            >
               <div className="mb-4 flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium">筛选视图</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm font-medium text-[#24455f]">筛选视图</p>
+                  <p className="text-xs text-[#5c7e98]">
                     仅切换 UI 状态，不影响数据
                   </p>
                 </div>
@@ -114,11 +117,12 @@ export class HomeFilters extends React.Component<
                       key={option}
                       type="button"
                       onClick={() => this.toggleOption(option)}
+                      aria-pressed={active}
                       className={cn(
-                        'rounded-full border px-3 py-2 text-sm transition-colors',
+                        'paper-chip rounded-full px-3 py-2 text-sm transition-colors cursor-pointer',
                         active
-                          ? 'border-pink-400/50 bg-pink-500/10 text-foreground'
-                          : 'border-border/60 bg-background/70 text-muted-foreground',
+                          ? 'border-[#F5A9B8]/60 bg-[linear-gradient(135deg,rgba(245,169,184,0.26),rgba(91,206,250,0.16))] text-[#24455f]'
+                          : 'text-[#5c7e98] hover:border-[#5BCEFA]/45',
                       )}
                     >
                       {option}

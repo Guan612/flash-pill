@@ -9,25 +9,25 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --sea-ink: #1f2552;
-  --sea-ink-soft: #596190;
-  --lagoon: #6366f1;
-  --lagoon-deep: #4338ca;
-  --palm: #ec4899;
-  --sand: #fdfcff;
-  --foam: #f4f7ff;
-  --surface: rgba(255, 255, 255, 0.78);
-  --surface-strong: rgba(255, 255, 255, 0.92);
-  --line: rgba(99, 102, 241, 0.16);
+  --sea-ink: #24455f;
+  --sea-ink-soft: #5c7e98;
+  --lagoon: #5bcefa;
+  --lagoon-deep: #2eaeda;
+  --palm: #f5a9b8;
+  --sand: #ffffff;
+  --foam: #f9fdff;
+  --surface: rgba(255, 255, 255, 0.92);
+  --surface-strong: rgba(255, 255, 255, 0.98);
+  --line: rgba(91, 206, 250, 0.26);
   --inset-glint: rgba(255, 255, 255, 0.86);
-  --kicker: rgba(67, 56, 202, 0.86);
-  --bg-base: #eef2ff;
-  --header-bg: rgba(255, 255, 255, 0.76);
-  --chip-bg: rgba(255, 255, 255, 0.88);
-  --chip-line: rgba(99, 102, 241, 0.18);
+  --kicker: rgba(46, 174, 218, 0.92);
+  --bg-base: #ffffff;
+  --header-bg: rgba(255, 255, 255, 0.9);
+  --chip-bg: rgba(255, 255, 255, 0.95);
+  --chip-line: rgba(91, 206, 250, 0.22);
   --link-bg-hover: rgba(255, 255, 255, 0.96);
-  --hero-a: rgba(99, 102, 241, 0.22);
-  --hero-b: rgba(236, 72, 153, 0.18);
+  --hero-a: rgba(91, 206, 250, 0.26);
+  --hero-b: rgba(245, 169, 184, 0.22);
 
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
@@ -65,25 +65,25 @@
 }
 
 .dark {
-  --sea-ink: #edf2ff;
-  --sea-ink-soft: #bac4eb;
-  --lagoon: #a5b4fc;
-  --lagoon-deep: #c4b5fd;
-  --palm: #f472b6;
-  --sand: #10132d;
-  --foam: #0a1022;
+  --sea-ink: #edf8ff;
+  --sea-ink-soft: #b8cbdd;
+  --lagoon: #86ddff;
+  --lagoon-deep: #c2eefe;
+  --palm: #f7bfca;
+  --sand: #11202d;
+  --foam: #0d1823;
   --surface: rgba(17, 24, 39, 0.78);
   --surface-strong: rgba(16, 19, 45, 0.92);
-  --line: rgba(165, 180, 252, 0.18);
+  --line: rgba(134, 221, 255, 0.2);
   --inset-glint: rgba(255, 255, 255, 0.08);
-  --kicker: #f9a8d4;
-  --bg-base: #080d1d;
+  --kicker: #ffd7e1;
+  --bg-base: #09131c;
   --header-bg: rgba(10, 16, 34, 0.8);
   --chip-bg: rgba(19, 24, 46, 0.92);
-  --chip-line: rgba(236, 72, 153, 0.22);
+  --chip-line: rgba(245, 169, 184, 0.24);
   --link-bg-hover: rgba(28, 33, 58, 0.88);
-  --hero-a: rgba(99, 102, 241, 0.2);
-  --hero-b: rgba(236, 72, 153, 0.14);
+  --hero-a: rgba(91, 206, 250, 0.18);
+  --hero-b: rgba(245, 169, 184, 0.14);
 
   --background: oklch(0.141 0.005 285.823);
   --foreground: oklch(0.985 0 0);
@@ -175,7 +175,7 @@ body {
     radial-gradient(1050px 620px at 112% -12%, var(--hero-b), transparent 62%),
     radial-gradient(
       720px 380px at 50% 115%,
-      rgba(236, 72, 153, 0.08),
+      rgba(245, 169, 184, 0.1),
       transparent 68%
     ),
     linear-gradient(
@@ -204,12 +204,12 @@ body::before {
     ),
     radial-gradient(
       circle at 78% 26%,
-      rgba(99, 102, 241, 0.16),
+      rgba(91, 206, 250, 0.16),
       transparent 42%
     ),
     radial-gradient(
       circle at 42% 82%,
-      rgba(236, 72, 153, 0.12),
+      rgba(245, 169, 184, 0.14),
       transparent 36%
     );
 }
@@ -277,8 +277,8 @@ pre code {
   background: linear-gradient(165deg, var(--surface-strong), var(--surface));
   box-shadow:
     0 1px 0 var(--inset-glint) inset,
-    0 22px 44px rgba(76, 83, 196, 0.12),
-    0 6px 18px rgba(31, 37, 82, 0.08);
+    0 18px 38px rgba(91, 206, 250, 0.1),
+    0 8px 18px rgba(36, 69, 95, 0.08);
   backdrop-filter: blur(4px);
 }
 
@@ -290,17 +290,17 @@ pre code {
   );
   box-shadow:
     0 1px 0 var(--inset-glint) inset,
-    0 18px 34px rgba(76, 83, 196, 0.12),
-    0 4px 14px rgba(31, 37, 82, 0.06);
+    0 18px 34px rgba(91, 206, 250, 0.1),
+    0 4px 14px rgba(36, 69, 95, 0.06);
 }
 
 .feature-card:hover {
   transform: translateY(-2px);
-  border-color: color-mix(in oklab, var(--lagoon-deep) 35%, var(--line));
+  border-color: color-mix(in oklab, var(--lagoon) 48%, var(--line));
 }
 
 .curation-card:hover {
-  border-color: color-mix(in oklab, var(--lagoon) 34%, var(--line));
+  border-color: color-mix(in oklab, var(--palm) 42%, var(--line));
 }
 
 button,
@@ -336,7 +336,7 @@ a {
   height: 2px;
   transform: scaleX(0);
   transform-origin: left;
-  background: linear-gradient(90deg, var(--lagoon), #f472b6);
+  background: linear-gradient(90deg, var(--lagoon), var(--palm));
   transition: transform 170ms ease;
 }
 

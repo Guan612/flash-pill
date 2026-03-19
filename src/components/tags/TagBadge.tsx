@@ -8,9 +8,9 @@ interface TagBadgeProps {
 }
 
 const tagColors = [
-  'bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300',
+  'bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-300',
   'bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-300',
-  'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300',
+  'bg-cyan-100 text-cyan-700 dark:bg-cyan-900 dark:text-cyan-300',
 ]
 
 export function TagBadge({ tag, onClick, className }: TagBadgeProps) {

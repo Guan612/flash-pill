@@ -15,6 +15,8 @@ describe('index route definition', () => {
     expect(source).toContain('invalidateQueries')
     expect(source).toContain('/capsule/')
     expect(source).toContain('isLoading')
+    expect(source).toContain('贴纸墙')
+    expect(source).toContain('今日墙面')
     expect(source).toContain('重试')
   })
 })
