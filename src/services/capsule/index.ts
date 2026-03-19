@@ -46,6 +46,8 @@ export const getAllCapsules = createServerFn({ method: 'GET' }).handler(
       orderBy: { createdAt: 'desc' },
     })
 
+    // Transform Prisma Date objects to ISO strings for Zod validation
+    // Zod schemas expect strings, but Prisma returns Date objects
     return capsules.map((capsule) =>
       capsuleSchema.parse({
         ...capsule,
@@ -79,6 +81,8 @@ export const getCapsuleById = createServerFn({ method: 'GET' })
       throw new Error('闪念不存在或无权访问')
     }
 
+    // Transform Prisma Date objects to ISO strings for Zod validation
+    // Zod schemas expect strings, but Prisma returns Date objects
     return capsuleSchema.parse({
       ...capsule,
       createdAt: capsule.createdAt.toISOString(),
