@@ -15,7 +15,7 @@ describe('auth login routing', () => {
   it('uses /auth/login for the Sign in link', () => {
     const headerUserFile = resolve(
       process.cwd(),
-      'src/integrations/better-auth/header-user.tsx',
+      'src/services/auth/better-auth-integration/header-user.tsx',
     )
     const source = readFileSync(headerUserFile, 'utf8')
 
