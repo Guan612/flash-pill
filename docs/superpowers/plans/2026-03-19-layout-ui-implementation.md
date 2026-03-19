@@ -26,10 +26,16 @@
 
 ### Modified Files
 
-- `src/routes/__root.tsx` - Simplify Header (remove social links, nav links)
+- `src/components/Header.tsx` - Simplify Header (remove social links, nav links)
+- `src/routes/__root.tsx` - No changes needed (Header is separate component)
 - `src/routes/index.tsx` - Refactor to Bento Grid layout
 - `src/routes/capsule/$id.tsx` - Create detail page with Grid layout
-- `src/services/capsule/index.ts` - Add getAllCapsules, getCapsuleById server functions
+- `src/services/capsule/index.ts` - Implement getAllCapsules, getCapsuleById (createCapsule already exists)
+
+### Existing Utilities (No Changes Needed)
+
+- `src/lib/utils.ts` - Contains `cn` utility function (already exists)
+- `src/services/capsule/index.ts` - Contains `createCapsule` server function (already exists)
 
 ---
 
@@ -101,13 +107,15 @@ git commit -m "feat: add Capsule type definitions"
 
 ---
 
-## Task 2: Add Server Functions
+## Task 2: Implement Server Functions
 
 **Files:**
 
 - Modify: `src/services/capsule/index.ts`
 
-- [ ] **Step 1: Add getAllCapsules server function**
+**Note:** The file already has a `createCapsule` export (used by QuickCaptureInput). We'll implement the empty `findAllCapsule` function as `getAllCapsules` and add `getCapsuleById`.
+
+- [ ] **Step 1: Implement getAllCapsules server function**
 
 ```typescript
 export const getAllCapsules = createServerFn({ method: 'GET' }).handler(
@@ -970,7 +978,7 @@ Expected: No errors
 - [ ] **Step 3: Commit**
 
 ```bash
-git add src/routes/capsule
+git add src/routes/capsule/
 git commit -m "feat: add capsule detail page with Grid layout"
 ```
 
