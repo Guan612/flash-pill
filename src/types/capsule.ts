@@ -1,5 +1,8 @@
 import { z } from 'zod'
 
+// Using Zod schemas for runtime validation + TypeScript type inference
+// Matches Prisma schema in prisma/schema.prisma
+
 export const capsuleStatusSchema = z.enum([
   'SEALED',
   'FERMENTING',
@@ -11,6 +14,7 @@ export const capsuleTypeSchema = z.enum(['IDEA', 'TODO', 'MEMO', 'INSIGHT'])
 export const tagSchema = z.object({
   id: z.string(),
   name: z.string(),
+  userId: z.string(),
 })
 
 export const attachmentSchema = z.object({
@@ -27,6 +31,7 @@ export const capsuleSchema = z.object({
   title: z.string().optional(),
   rawContent: z.string(),
   refinedContent: z.string().optional(),
+  isOpened: z.boolean(),
   status: capsuleStatusSchema,
   type: capsuleTypeSchema,
   createdAt: z.string(),
