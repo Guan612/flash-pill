@@ -338,6 +338,237 @@ S: 快速保存
 
 ---
 
+## 数据模型
+
+### Capsule（胶囊）
+
+```typescript
+interface Capsule {
+  id: string
+  userId: string
+
+  // 内容
+  title?: string // AI 生成的标题（可选）
+  rawContent: string // 原始内容
+  refinedContent?: string // AI 优化内容（可选）
+
+  // 状态
+  status: CapsuleStatus
+  type: CapsuleType
+
+  // 时间
+  createdAt: string
+  updatedAt: string
+  openAt?: string
+
+  // 附件
+  attachments: Attachment[]
+
+  // 上下文
+  mood?: string
+  location?: string
+
+  // 标签
+  tags: Tag[]
+}
+
+enum CapsuleStatus {
+  SEALED = 'SEALED', // 封存中
+  FERMENTING = 'FERMENTING', // 发酵中
+  OPENED = 'OPENED', // 已开启
+  ARCHIVED = 'ARCHIVED', // 已归档
+}
+
+enum CapsuleType {
+  IDEA = 'IDEA', // 点子
+  TODO = 'TODO', // 待办
+  MEMO = 'MEMO', // 随手记
+  INSIGHT = 'INSIGHT', // 深度思考
+}
+
+interface Tag {
+  id: string
+  name: string
+}
+
+interface Attachment {
+  id: string
+  type: 'IMAGE' | 'AUDIO' | 'FILE'
+  url: string
+  fileName?: string
+  duration?: number // 音频时长（秒）
+}
+```
+
+---
+
+## 组件 API
+
+### BentoGrid
+
+```typescript
+interface BentoGridProps {
+  children: React.ReactNode
+  className?: string
+}
+
+// 用途：统一 Grid 布局容器
+// 示例：<BentoGrid><QuickCaptureInput /><CapsuleCard /></BentoGrid>
+```
+
+### PageContainer
+
+```typescript
+interface PageContainerProps {
+  children: React.ReactNode
+  className?: string
+}
+
+// 用途：页面包装器，提供背景装饰和内边距
+// 示例：<PageContainer><BentoGrid>...</BentoGrid></PageContainer>
+```
+
+### QuickCaptureInput
+
+```typescript
+interface QuickCaptureInputProps {
+  onSave: (content: string) => Promise<void>
+  placeholder?: string
+  className?: string
+}
+
+// 用途：快捷捕捉输入框
+// 交互：
+//   - 输入完成后点击保存按钮 → 调用 onSave
+//   - 保存成功 → 清空输入框
+//   - 父组件可使用 TanStack Query invalidateQueries 刷新胶囊列表
+```
+
+### CapsuleCard
+
+```typescript
+interface CapsuleCardProps {
+  capsule: Capsule
+  size?: 'small' | 'medium' | 'large'
+  onClick?: (capsule: Capsule) => void
+  className?: string
+}
+
+// 用途：展示胶囊卡片
+// 尺寸变体：
+//   - small: 仅标题 + 状态点
+//   - medium: 标题 + 摘要 + 标签
+//   - large: 完整内容 + 时间 + 按钮
+// 交互：
+//   - 点击卡片 → 调用 onClick（通常跳转到详情页）
+```
+
+### CapsuleStatus
+
+```typescript
+interface CapsuleStatusProps {
+  status: CapsuleStatus
+  className?: string
+}
+
+// 用途：状态指示器组件
+// 渲染：彩色圆点（根据 status 显示对应颜色）
+```
+
+### StatsCard
+
+```typescript
+interface StatsCardProps {
+  label: string
+  value: number
+  variant?: 'primary' | 'secondary'
+  className?: string
+}
+
+// 用途：统计卡片
+// variant 决定渐变色：primary（蓝粉）或 secondary（紫粉）
+```
+
+### TagBadge
+
+```typescript
+interface TagBadgeProps {
+  tag: Tag
+  onClick?: (tag: Tag) => void
+  className?: string
+}
+
+// 用途：标签徽章
+// 交互：点击 → 调用 onClick（通常触发筛选）
+```
+
+---
+
+## 状态管理与数据流
+
+### 数据获取
+
+使用项目现有的 **TanStack Query** 设置：
+
+```typescript
+// src/services/capsule/index.ts（已存在）
+export const getAllCapsules = createServerFn({ method: 'GET' }).handler(...)
+export const getCapsuleById = createServerFn({ method: 'GET' }).handler(...)
+export const createCapsule = createServerFn({ method: 'POST' }).handler(...) // 已实现
+
+// 在页面中使用 TanStack Query
+const { data: capsules } = useQuery({
+  queryKey: ['capsules'],
+  queryFn: () => getAllCapsules()
+})
+```
+
+### 组件交互流程
+
+#### 1. 首页数据流
+
+```
+首页组件
+  ↓
+useQuery(['capsules']) → 获取胶囊列表
+  ↓
+渲染 BentoGrid
+  ↓
+渲染多个 CapsuleCard（传入 capsule 数据）
+```
+
+#### 2. 快捷捕捉数据流
+
+```
+QuickCaptureInput
+  ↓
+用户输入内容 → 点击保存
+  ↓
+调用 createCapsule({ content })
+  ↓
+保存成功
+  ↓
+父组件调用 queryClient.invalidateQueries(['capsules'])
+  ↓
+首页自动刷新，显示新胶囊
+```
+
+#### 3. 标签筛选数据流
+
+```
+TagBadge
+  ↓
+点击标签
+  ↓
+父组件更新筛选状态
+  ↓
+useQuery(['capsules', { tag: selectedTag }]) → 重新获取
+  ↓
+首页显示筛选后的胶囊
+```
+
+---
+
 ## 组件拆分
 
 ### 组件结构树
