@@ -1,0 +1,82 @@
+@layer base {
+  :root {
+    --gradient-blue: linear-gradient(135deg, #6366f1, #3b82f6);
+    --gradient-pink: linear-gradient(135deg, #ec4899, #f472b6);
+    --gradient-mixed: linear-gradient(135deg, #6366f1, #ec4899);
+
+    --status-sealed: #6366f1;
+    --status-fermenting: #ec4899;
+    --status-opened: #a855f7;
+    --status-archived: #6b7280;
+  }
+
+  .dark {
+    --bg-glass: rgba(15, 23, 42, 0.7);
+    --border-glass: rgba(51, 65, 85, 0.5);
+  }
+
+  .light {
+    --bg-glass: rgba(255, 255, 255, 0.7);
+    --border-glass: rgba(255, 255, 255, 0.5);
+  }
+}
+
+@layer utilities {
+  .bg-glass {
+    background: var(--bg-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-glass);
+  }
+
+  .bg-pattern-light {
+    background-image:
+      radial-gradient(
+        circle at 20% 20%,
+        rgba(99, 102, 241, 0.2) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 80%,
+        rgba(236, 72, 153, 0.2) 0%,
+        transparent 50%
+      );
+  }
+
+  .bg-pattern-dark {
+    background-image:
+      radial-gradient(
+        circle at 20% 20%,
+        rgba(99, 102, 241, 0.3) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 80%,
+        rgba(236, 72, 153, 0.3) 0%,
+        transparent 50%
+      );
+  }
+
+  .gradient-border {
+    position: relative;
+    background: var(--bg-glass);
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    background: var(--gradient-mixed);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+}
