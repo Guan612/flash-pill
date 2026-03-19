@@ -3,6 +3,24 @@
     --gradient-blue: linear-gradient(135deg, #6366f1, #3b82f6);
     --gradient-pink: linear-gradient(135deg, #ec4899, #f472b6);
     --gradient-mixed: linear-gradient(135deg, #6366f1, #ec4899);
+    --sea-ink: #1f2552;
+    --sea-ink-soft: #596190;
+    --lagoon: #6366f1;
+    --lagoon-deep: #4338ca;
+    --sand: #fdfcff;
+    --foam: #f4f7ff;
+    --surface: rgba(255, 255, 255, 0.78);
+    --surface-strong: rgba(255, 255, 255, 0.92);
+    --line: rgba(99, 102, 241, 0.16);
+    --inset-glint: rgba(255, 255, 255, 0.86);
+    --kicker: rgba(67, 56, 202, 0.86);
+    --bg-base: #eef2ff;
+    --header-bg: rgba(255, 255, 255, 0.76);
+    --chip-bg: rgba(255, 255, 255, 0.88);
+    --chip-line: rgba(99, 102, 241, 0.18);
+    --link-bg-hover: rgba(255, 255, 255, 0.96);
+    --hero-a: rgba(99, 102, 241, 0.22);
+    --hero-b: rgba(236, 72, 153, 0.18);
 
     --status-sealed: #6366f1;
     --status-fermenting: #ec4899;
@@ -11,13 +29,31 @@
   }
 
   .dark {
-    --bg-glass: rgba(15, 23, 42, 0.7);
-    --border-glass: rgba(51, 65, 85, 0.5);
+    --sea-ink: #edf2ff;
+    --sea-ink-soft: #bac4eb;
+    --lagoon: #a5b4fc;
+    --lagoon-deep: #c4b5fd;
+    --sand: #10132d;
+    --foam: #0a1022;
+    --surface: rgba(17, 24, 39, 0.78);
+    --surface-strong: rgba(16, 19, 45, 0.92);
+    --line: rgba(165, 180, 252, 0.18);
+    --inset-glint: rgba(255, 255, 255, 0.08);
+    --kicker: rgba(244, 114, 182, 0.82);
+    --bg-base: #080d1d;
+    --header-bg: rgba(10, 16, 34, 0.8);
+    --chip-bg: rgba(19, 24, 46, 0.92);
+    --chip-line: rgba(236, 72, 153, 0.22);
+    --link-bg-hover: rgba(28, 33, 58, 0.88);
+    --hero-a: rgba(99, 102, 241, 0.2);
+    --hero-b: rgba(236, 72, 153, 0.14);
+    --bg-glass: rgba(15, 23, 42, 0.72);
+    --border-glass: rgba(129, 140, 248, 0.24);
   }
 
   .light {
-    --bg-glass: rgba(255, 255, 255, 0.7);
-    --border-glass: rgba(255, 255, 255, 0.5);
+    --bg-glass: rgba(255, 255, 255, 0.82);
+    --border-glass: rgba(99, 102, 241, 0.18);
   }
 }
 
@@ -78,5 +114,12 @@
     mask-composite: exclude;
     border-radius: inherit;
     pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .curation-card {
+      transition: opacity 120ms ease;
+      transform: none !important;
+    }
   }
 }

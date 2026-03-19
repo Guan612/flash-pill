@@ -20,7 +20,7 @@ export const tagSchema = z.object({
 export const attachmentSchema = z.object({
   id: z.string(),
   type: z.enum(['IMAGE', 'AUDIO', 'FILE']),
-  url: z.string().url(),
+  url: z.url(),
   fileName: z.string().optional(),
   duration: z.number().optional(),
 })
@@ -36,7 +36,7 @@ export const capsuleSchema = z.object({
   type: capsuleTypeSchema,
   createdAt: z.string(),
   updatedAt: z.string(),
-  openAt: z.string().datetime().optional(),
+  openAt: z.iso.datetime().optional(),
   attachments: z.array(attachmentSchema),
   mood: z.string().optional(),
   location: z.string().optional(),

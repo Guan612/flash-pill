@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import * as React from 'react'
+import { Mic, Sparkles, Tags, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
@@ -9,57 +10,190 @@ interface QuickCaptureInputProps {
   className?: string
 }
 
-export function QuickCaptureInput({
-  onSave,
-  placeholder = '此刻在想什么？',
-  className,
-}: QuickCaptureInputProps) {
-  const [content, setContent] = useState('')
-  const [isSaving, setIsSaving] = useState(false)
+type Feedback = { type: 'success' | 'error'; text: string } | null
 
-  const handleSave = async () => {
+interface QuickCaptureInputState {
+  content: string
+  isSaving: boolean
+  isDesktopExpanded: boolean
+  isMobileOpen: boolean
+  feedback: Feedback
+}
+
+export class QuickCaptureInput extends React.Component<
+  QuickCaptureInputProps,
+  QuickCaptureInputState
+> {
+  state: QuickCaptureInputState = {
+    content: '',
+    isSaving: false,
+    isDesktopExpanded: false,
+    isMobileOpen: false,
+    feedback: null,
+  }
+
+  handleSave = async () => {
+    const { content } = this.state
+
     if (!content.trim()) return
 
-    setIsSaving(true)
+    this.setState({ isSaving: true, feedback: null })
+
     try {
-      await onSave(content)
-      setContent('')
-    } catch (err) {
-      console.error(err)
-      alert('保存失败')
+      await this.props.onSave(content)
+      this.setState({
+        content: '',
+        feedback: { type: 'success', text: '已封存到胶囊墙' },
+      })
+    } catch {
+      this.setState({
+        feedback: { type: 'error', text: '保存失败，当前内容已保留' },
+      })
     } finally {
-      setIsSaving(false)
+      this.setState({ isSaving: false })
     }
   }
 
-  return (
-    <div className={cn('gradient-border rounded-2xl p-4', className)}>
-      <Textarea
-        placeholder={placeholder}
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        className="min-h-[120px] resize-none border-0 bg-transparent focus:ring-0 text-base"
-        onKeyDown={(e) => {
-          if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-            e.preventDefault()
-            handleSave()
-          }
-        }}
-      />
-      <div className="flex items-center justify-between mt-3">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span className="text-[#6366f1]">🎤</span>
-          <span>🏷️</span>
-          <span className="opacity-50">⌘/Ctrl + Enter 保存</span>
+  openDesktopComposer = () => {
+    this.setState({ isDesktopExpanded: true, feedback: null })
+  }
+
+  openMobileComposer = () => {
+    this.setState({ isMobileOpen: true, feedback: null })
+  }
+
+  closeMobileComposer = () => {
+    this.setState({ isMobileOpen: false })
+  }
+
+  renderComposer(variant: 'desktop' | 'mobile') {
+    const { placeholder = '此刻在想什么？' } = this.props
+    const { content, feedback, isSaving } = this.state
+    const isMobile = variant === 'mobile'
+
+    return (
+      <div
+        className={cn(
+          'rounded-2xl border border-border/60 bg-background/95 p-4 shadow-sm',
+          isMobile && 'border-0 bg-transparent p-0 shadow-none',
+        )}
+      >
+        <Textarea
+          placeholder={placeholder}
+          value={content}
+          onChange={(e) => this.setState({ content: e.target.value })}
+          className={cn(
+            'min-h-[120px] resize-none text-base',
+            isMobile && 'min-h-[180px]',
+          )}
+          onKeyDown={(e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+              e.preventDefault()
+              void this.handleSave()
+            }
+          }}
+        />
+
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-1">
+              <Mic className="size-4" aria-hidden="true" />
+              <span>语音</span>
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Tags className="size-4" aria-hidden="true" />
+              <span>标签</span>
+            </span>
+            <span className="inline-flex items-center gap-1 opacity-70">
+              <Sparkles className="size-4" aria-hidden="true" />
+              <span>封存灵感</span>
+            </span>
+          </div>
+
+          <Button
+            onClick={() => void this.handleSave()}
+            disabled={isSaving || !content.trim()}
+          >
+            {isSaving ? '保存中...' : '封存'}
+          </Button>
         </div>
-        <Button
-          onClick={handleSave}
-          disabled={isSaving || !content.trim()}
-          className="bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600"
-        >
-          {isSaving ? '保存中...' : '封存'}
-        </Button>
+
+        {feedback ? (
+          <p
+            className={cn(
+              'mt-3 text-sm',
+              feedback.type === 'success'
+                ? 'text-emerald-600'
+                : 'text-destructive',
+            )}
+            role={feedback.type === 'error' ? 'alert' : undefined}
+          >
+            {feedback.text}
+          </p>
+        ) : null}
       </div>
-    </div>
-  )
+    )
+  }
+
+  render() {
+    const { className } = this.props
+    const { isDesktopExpanded, isMobileOpen } = this.state
+
+    return (
+      <div className={cn('relative', className)}>
+        <div className="gradient-border rounded-2xl p-4">
+          {isDesktopExpanded ? (
+            this.renderComposer('desktop')
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={this.openDesktopComposer}
+            >
+              <Sparkles className="size-4" aria-hidden="true" />
+              记录闪念
+            </Button>
+          )}
+        </div>
+
+        <Button
+          type="button"
+          size="icon-lg"
+          className="fixed bottom-6 right-6 rounded-full shadow-lg md:hidden"
+          onClick={this.openMobileComposer}
+          aria-label="打开移动端记录面板"
+        >
+          <Mic className="size-5" aria-hidden="true" />
+        </Button>
+
+        {isMobileOpen ? (
+          <div className="fixed inset-0 z-50 flex items-end bg-black/30 md:hidden">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="快速记录面板"
+              className="w-full rounded-t-3xl bg-background p-4 shadow-2xl"
+            >
+              <div className="mb-4 flex items-center justify-between">
+                <p className="text-sm font-medium text-muted-foreground">
+                  快速记录面板
+                </p>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={this.closeMobileComposer}
+                  aria-label="关闭记录面板"
+                >
+                  <X className="size-4" aria-hidden="true" />
+                </Button>
+              </div>
+
+              {this.renderComposer('mobile')}
+            </div>
+          </div>
+        ) : null}
+      </div>
+    )
+  }
 }

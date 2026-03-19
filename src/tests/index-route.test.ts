@@ -9,5 +9,12 @@ describe('index route definition', () => {
 
     expect(source).toContain("createFileRoute('/')")
     expect(source).toContain('export const Route =')
+    expect(source).toContain('HomeFilters')
+    expect(source).toContain('QuickCaptureInput')
+    expect(source).toContain('pattern[index % pattern.length]')
+    expect(source).toContain('invalidateQueries')
+    expect(source).toContain('/capsule/')
+    expect(source).toContain('isLoading')
+    expect(source).toContain('重试')
   })
 })

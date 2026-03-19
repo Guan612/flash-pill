@@ -13,15 +13,23 @@ export function StatsCard({
   variant = 'primary',
   className,
 }: StatsCardProps) {
-  const gradientClass =
+  const toneClass =
     variant === 'primary'
-      ? 'bg-gradient-to-br from-indigo-500 to-pink-500'
-      : 'bg-gradient-to-br from-purple-500 to-pink-500'
+      ? 'border-indigo-400/30 bg-indigo-500/10 text-foreground'
+      : 'border-pink-400/30 bg-pink-500/10 text-foreground'
 
   return (
-    <div className={cn('rounded-xl p-4 text-white', gradientClass, className)}>
-      <div className="text-3xl font-bold">{value}</div>
-      <div className="text-sm opacity-90">{label}</div>
+    <div
+      className={cn(
+        'inline-flex items-center gap-3 rounded-full border px-4 py-2 shadow-sm backdrop-blur-sm',
+        toneClass,
+        className,
+      )}
+    >
+      <div className="text-lg font-semibold leading-none">{value}</div>
+      <div className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+        {label}
+      </div>
     </div>
   )
 }

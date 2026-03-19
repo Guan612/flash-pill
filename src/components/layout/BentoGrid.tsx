@@ -8,7 +8,7 @@ interface BentoGridProps {
 export function BentoGrid({ children, className = '' }: BentoGridProps) {
   return (
     <div
-      className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ${className}`}
+      className={`grid auto-rows-[minmax(220px,auto)] grid-cols-1 gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 min-[1440px]:grid-cols-4 ${className}`}
     >
       {children}
     </div>

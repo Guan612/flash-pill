@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { authClient } from '@/services/auth/client'
 
@@ -8,6 +9,23 @@ export const Route = createFileRoute('/auth/login')({
 })
 
 type AuthMode = 'sign-in' | 'sign-up'
+
+// 定义 Zod 验证 schema
+const signInSchema = z.object({
+  email: z.email('邮箱格式不正确'),
+  password: z.string().min(1, '请填写密码').min(8, '密码至少需要 8 位'),
+})
+
+const signUpSchema = signInSchema.extend({
+  name: z
+    .string()
+    .min(1, '注册时需要填写昵称')
+    .min(2, '昵称至少需要 2 个字符')
+    .max(20, '昵称最多 20 个字符'),
+})
+
+type SignInFormData = z.infer<typeof signInSchema>
+type SignUpFormData = z.infer<typeof signUpSchema>
 
 function AuthLoginPage() {
   const navigate = useNavigate()
@@ -22,19 +40,26 @@ function AuthLoginPage() {
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setErrorMessage('')
 
-    if (!email.trim() || !password.trim()) {
-      setErrorMessage('请填写邮箱和密码')
-      return
-    }
+    // 根据模式选择对应的 schema
+    const schema = mode === 'sign-in' ? signInSchema : signUpSchema
 
-    if (mode === 'sign-up' && !name.trim()) {
-      setErrorMessage('注册时需要填写昵称')
+    // 准备验证数据
+    const formData: SignInFormData | SignUpFormData =
+      mode === 'sign-in' ? { email, password } : { name, email, password }
+
+    // 使用 Zod 进行验证
+    const validationResult = schema.safeParse(formData)
+
+    if (!validationResult.success) {
+      // 获取第一个错误信息
+      const firstError = validationResult.error.issues[0]
+      setErrorMessage(firstError.message)
       return
     }
 
     setIsSubmitting(true)
-    setErrorMessage('')
 
     try {
       if (mode === 'sign-in') {

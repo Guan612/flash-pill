@@ -15,6 +15,9 @@ const config = defineConfig({
     tanstackStart(),
     viteReact(),
   ],
+  test: {
+    setupFiles: ['./src/tests/setup.ts'],
+  },
 })
 
 export default config
