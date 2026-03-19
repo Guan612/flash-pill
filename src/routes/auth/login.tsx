@@ -1,8 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { useNavigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
-import { authClient } from '@/lib/auth-client'
+import { authClient } from '@/services/auth/client'
 
 export const Route = createFileRoute('/auth/login')({
   component: AuthLoginPage,
@@ -44,7 +43,7 @@ function AuthLoginPage() {
           password,
         })
 
-        if (result?.error) {
+        if (result.error) {
           setErrorMessage(result.error.message || '登录失败，请稍后重试')
           return
         }
@@ -55,7 +54,7 @@ function AuthLoginPage() {
           password,
         })
 
-        if (result?.error) {
+        if (result.error) {
           setErrorMessage(result.error.message || '注册失败，请稍后重试')
           return
         }

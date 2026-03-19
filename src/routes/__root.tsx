@@ -12,7 +12,7 @@ import TanStackQueryProvider from '../integrations/tanstack-query/root-provider'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
-import StoreDevtools from '../lib/demo-store-devtools'
+import StoreDevtools from '#/features/demo-store/components/store-devtools'
 
 import appCss from '../styles.css?url'
 

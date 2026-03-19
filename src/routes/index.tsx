@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { createCapsule } from '@/lib/capsule'
+import { createCapsule } from '@/services/capsule'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 
@@ -12,14 +12,10 @@ function Index() {
   const [content, setContent] = useState('')
 
   const handleSave = async () => {
-    if (!content.trim()) return
-
     try {
-      const res = await createCapsule({ data: { content } })
-      if (res.success) {
-        alert('闪念已封存！')
-        setContent('')
-      }
+      await createCapsule({ data: { content } })
+      alert('闪念已封存！')
+      setContent('')
     } catch (err) {
       console.error(err)
       alert('保存失败，请检查是否登录')

@@ -3,6 +3,7 @@
 ## 问题概述
 
 **错误信息：**
+
 ```
 TypeError: selector is not a function
     at memoizedSelector (node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.development.js:47:30)
@@ -15,11 +16,13 @@ TypeError: selector is not a function
 ## 根本原因
 
 `@tanstack/react-store` 的 `useStore` hook 签名要求：
+
 ```typescript
 useStore<TAtom, T>(atom: TAtom, selector: (snapshot) => T, compare?: (a, b) => boolean): T
 ```
 
 当前代码只传递了 store 实例，缺少必需的 `selector` 函数参数：
+
 ```typescript
 // ❌ 错误用法
 const isOpen = useStore(showAIAssistant)
@@ -33,11 +36,13 @@ const isOpen = useStore(showAIAssistant)
 **行号：** 82
 
 **修改前：**
+
 ```typescript
 const isOpen = useStore(showAIAssistant)
 ```
 
 **修改后：**
+
 ```typescript
 const isOpen = useStore(showAIAssistant, (state) => state)
 ```
@@ -45,6 +50,7 @@ const isOpen = useStore(showAIAssistant, (state) => state)
 ### 步骤 2: 验证修复
 
 运行开发服务器确认错误已解决：
+
 ```bash
 bun run dev
 ```
@@ -54,6 +60,7 @@ bun run dev
 ### 为什么需要 selector 函数？
 
 `useStore` 使用 `useSyncExternalStoreWithSelector`，它需要一个 selector 函数来：
+
 1. 从 store 的完整状态中选择需要的数据
 2. 确保只有选中的数据变化时才触发重新渲染
 3. 避免不必要的组件更新
