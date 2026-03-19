@@ -1,7 +1,8 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
-import { prisma } from '@/db' // 你的 Prisma 实例
-import { auth } from '@/lib/auth' // 你的 Better Auth 实例
+import { prisma } from '@/db'
+import { capsuleSchema } from '@/types/capsule'
+import { auth } from '../auth/config'
 
 export const createCapsule = createServerFn({ method: 'POST' })
   .inputValidator((data: { content: string; openAt?: string }) => data)
@@ -27,6 +28,61 @@ export const createCapsule = createServerFn({ method: 'POST' })
     return { success: true, capsuleId: newCapsule.id }
   })
 
-export const findAllCapsule = createServerFn({ method: 'GET' }).handler(
-  async () => {},
+export const getAllCapsules = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    const headers = getRequestHeaders()
+    const session = await auth.api.getSession({ headers })
+
+    if (!session) {
+      throw new Error('未登录，无法获取闪念')
+    }
+
+    const capsules = await prisma.capsule.findMany({
+      where: { userId: session.user.id },
+      include: {
+        tags: true,
+        attachments: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    })
+
+    return capsules.map((capsule) =>
+      capsuleSchema.parse({
+        ...capsule,
+        createdAt: capsule.createdAt.toISOString(),
+        updatedAt: capsule.updatedAt.toISOString(),
+        openAt: capsule.openAt?.toISOString(),
+      }),
+    )
+  },
 )
+
+export const getCapsuleById = createServerFn({ method: 'GET' })
+  .inputValidator((data: { id: string }) => data)
+  .handler(async ({ data }) => {
+    const headers = getRequestHeaders()
+    const session = await auth.api.getSession({ headers })
+
+    if (!session) {
+      throw new Error('未登录，无法获取闪念')
+    }
+
+    const capsule = await prisma.capsule.findUnique({
+      where: { id: data.id },
+      include: {
+        tags: true,
+        attachments: true,
+      },
+    })
+
+    if (!capsule || capsule.userId !== session.user.id) {
+      throw new Error('闪念不存在或无权访问')
+    }
+
+    return capsuleSchema.parse({
+      ...capsule,
+      createdAt: capsule.createdAt.toISOString(),
+      updatedAt: capsule.updatedAt.toISOString(),
+      openAt: capsule.openAt?.toISOString(),
+    })
+  })
