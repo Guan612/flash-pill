@@ -1,38 +1,65 @@
-import { useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { createCapsule } from '@/services/capsule'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
+import { BentoGrid } from '@/components/layout/BentoGrid'
+import { PageContainer } from '@/components/layout/PageContainer'
+import { QuickCaptureInput } from '@/components/capsule/QuickCaptureInput'
+import { CapsuleCard } from '@/components/capsule/CapsuleCard'
+import { StatsCard } from '@/components/stats/StatsCard'
+import { getAllCapsules, createCapsule } from '@/services/capsule'
 
 export const Route = createFileRoute('/')({
-  component: Index,
+  component: Home,
 })
 
-function Index() {
-  const [content, setContent] = useState('')
+function Home() {
+  const queryClient = useQueryClient()
+  const { data: capsules = [] } = useQuery({
+    queryKey: ['capsules'],
+    queryFn: () => getAllCapsules(),
+  })
 
-  const handleSave = async () => {
-    try {
-      await createCapsule({ data: { content } })
-      alert('闪念已封存！')
-      setContent('')
-    } catch (err) {
-      console.error(err)
-      alert('保存失败，请检查是否登录')
-    }
+  const handleSave = async (content: string) => {
+    await createCapsule({ data: { content } })
+    await queryClient.invalidateQueries({ queryKey: ['capsules'] })
   }
 
+  const totalCapsules = capsules.length
+  const thisWeekCapsules = capsules.filter((c: any) => {
+    const createdAt = new Date(c.createdAt)
+    const weekAgo = new Date()
+    weekAgo.setDate(weekAgo.getDate() - 7)
+    return createdAt >= weekAgo
+  }).length
+
   return (
-    <div className="mx-auto max-w-xl space-y-4 p-8">
-      <h1 className="text-2xl font-bold">闪念胶囊 🚀</h1>
-      <Textarea
-        placeholder="此刻在想什么？"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
-      <Button onClick={handleSave} className="w-full">
-        封存这个瞬间
-      </Button>
-    </div>
+    <PageContainer>
+      <BentoGrid>
+        <QuickCaptureInput onSave={handleSave} className="col-span-full" />
+
+        <StatsCard
+          label="总胶囊"
+          value={totalCapsules}
+          className="col-span-1"
+        />
+
+        <StatsCard
+          label="本周新增"
+          value={thisWeekCapsules}
+          variant="secondary"
+          className="col-span-1"
+        />
+
+        {capsules.map((capsule: any, index: number) => (
+          <CapsuleCard
+            key={capsule.id}
+            capsule={capsule}
+            size={
+              index % 3 === 0 ? 'large' : index % 2 === 0 ? 'medium' : 'small'
+            }
+            onClick={() => (window.location.href = `/capsule/${capsule.id}`)}
+          />
+        ))}
+      </BentoGrid>
+    </PageContainer>
   )
 }
